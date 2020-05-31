@@ -14063,7 +14063,7 @@ Your top_20 looks like the solution list! Nice job.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[77]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># create the user-article matrix with 1&#39;s and 0&#39;s</span>
@@ -14085,6 +14085,7 @@ Your top_20 looks like the solution list! Nice job.
     <span class="n">tmpdf</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:]</span><span class="o">=</span><span class="mi">1</span>
     <span class="n">user_item</span> <span class="o">=</span> <span class="n">tmpdf</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;article_id&#39;</span><span class="p">,</span><span class="n">aggfunc</span> <span class="o">=</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;title&#39;</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">tmpdf</span>
+    <span class="n">user_item</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">user_item</span> <span class="c1"># return the user_item matrix </span>
 
 <span class="n">user_item</span> <span class="o">=</span> <span class="n">create_user_item_matrix</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -14119,7 +14120,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[78]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Tests: You should just need to run this cell.  Don&#39;t change the code.</span>
@@ -14163,7 +14164,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[79]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">find_similar_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">user_item</span><span class="o">=</span><span class="n">user_item</span><span class="p">):</span>
@@ -14183,18 +14184,11 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 <span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># compute similarity of each user to the provided user</span>
-    <span class="n">user_items_replaced</span> <span class="o">=</span> <span class="n">user_item</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">users</span><span class="o">=</span><span class="p">[]</span>
-    <span class="n">similarity</span><span class="o">=</span><span class="p">[]</span>
-    <span class="n">vals</span> <span class="o">=</span> <span class="n">user_items_replaced</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">user_id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">user_item</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-        <span class="n">users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-        <span class="n">similarity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span><span class="n">user_items_replaced</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">user</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
-    <span class="n">similarity_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="s1">&#39;similarity&#39;</span><span class="p">:</span><span class="n">similarity</span><span class="p">})</span>
+    <span class="n">similar_mat</span> <span class="o">=</span> <span class="n">user_item</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">user_item</span><span class="p">[</span><span class="n">user_item</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="c1"># sort by similarity</span>
+    <span class="n">most_similar_users</span> <span class="o">=</span> <span class="n">similar_mat</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
-    <span class="k">return</span> <span class="n">similarity_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;similarity&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
- <span class="c1"># return a list of the users in order from most to least similar</span>
-        
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">most_similar_users</span><span class="p">)</span>       
 </pre></div>
 
     </div>
@@ -14204,7 +14198,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[80]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Do a spot check of your function</span>
@@ -14227,9 +14221,9 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>The 10 most similar users to user 1 are: [0, 3932, 22, 3781, 202, 4458, 3869, 130, 4200, 45]
-The 5 most similar users to user 3933 are: [0, 3932, 22, 3781, 202]
-The 3 most similar users to user 46 are: [45, 4200, 3781]
+<pre>The 10 most similar users to user 1 are: [3933, 23, 3782, 203, 4459, 3870, 131, 4201, 46, 5041]
+The 5 most similar users to user 3933 are: [3933, 23, 3782, 203, 4459]
+The 3 most similar users to user 46 are: [4201, 3782, 23]
 </pre>
 </div>
 </div>
@@ -14288,1040 +14282,7 @@ The 3 most similar users to user 46 are: [45, 4200, 3781]
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_content</span><span class="p">[</span><span class="s1">&#39;doc_full_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[24]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;Detect Malfunctioning IoT Sensors with Streaming Analytics&#39;,
- &#39;Communicating data science: A guide to presenting your work&#39;,
- &#39;This Week in Data Science (April 18, 2017)&#39;,
- &#39;DataLayer Conference: Boost the performance of your distributed database&#39;,
- &#39;Analyze NY Restaurant data using Spark in DSX&#39;,
- &#39;Browsing PostgreSQL Data with Compose&#39;,
- &#39;Upgrading your PostgreSQL to 9.5&#39;,
- &#39;Data Wrangling at Slack&#39;,
- &#39;Data Science Bowl 2017&#39;,
- &#39;Using Apache Spark to predict attack vectors among billions of users and trillions of events&#39;,
- &#39;Offline-First iOS Apps with Swift &amp; Cloudant Sync; Part 1: The Datastore&#39;,
- &#39;Warehousing GeoJSON documents&#39;,
- &#39;Timeseries Data Analysis of IoT events by using Jupyter Notebook&#39;,
- &#39;Bridging the Gap Between Python and Scala Jupyter Notebooks&#39;,
- &#39;Got zip code data? Prep it for analytics. – IBM Watson Data Lab – Medium&#39;,
- &#39;Apache Spark™ 2.0: Extend Structured Streaming for Spark ML&#39;,
- &#39;Higher-order Logistic Regression for Large Datasets&#39;,
- &#39;Compose for MySQL now for you&#39;,
- &#39;The Greatest Public Datasets for AI – Startup Grind&#39;,
- &#39;Finding the Mode in PostgreSQL&#39;,
- &#39;Working interactively with RStudio and notebooks in DSX&#39;,
- &#39;Mapping for Data Science with PixieDust and Mapbox – IBM Watson Data Lab – Medium&#39;,
- &#39;Move CSVs into different JSON doc stores&#39;,
- &#39;Tutorial: How to build and query a Cloudant geospatial index&#39;,
- &#39;The Conversational Interface is the New Paradigm&#39;,
- &#39;Creating the Data Science Experience&#39;,
- &#39;Using Machine Learning to predict parking difficulty&#39;,
- &#39;Getting The Best Performance With PySpark&#39;,
- &#39;Deep Forest: Towards An Alternative to Deep Neural Networks&#39;,
- &#39;Experience IoT with Coursera&#39;,
- &#39;How open API economy accelerates the growth of big data and analytics&#39;,
- &#39;Sign up for a free trial in DSX&#39;,
- &#34;A Kaggler&#39;s Guide to Model Stacking in Practice&#34;,
- &#39;Using Brunel in IPython/Jupyter Notebooks&#39;,
- &#39;Top 10 Machine Learning Use Cases: Part 1&#39;,
- &#39;Gaze Into My Reddit Crystal Ball – IBM Watson Data Lab – Medium&#39;,
- &#39;Data visualization playbook: The right level of detail&#39;,
- &#39;Create a Custom Domain for Cloudant Using Cloudflare – IBM Watson Data Lab&#39;,
- &#39;For Developers: Querying the Cloudant Primary Index&#39;,
- &#39;Pulling and Displaying ETF Data&#39;,
- &#39;Ensemble Learning to Improve Machine Learning Results&#39;,
- &#39;Customizing MongoDB’s Shell with Compact Prompts&#39;,
- &#34;Getting Started with Compose&#39;s ScyllaDB&#34;,
- &#39;Deep Learning With Tensorflow Course by Big Data University&#39;,
- &#39;Uncover Product Insights Hidden in Stack Overflow&#39;,
- &#39;Start Developing with Spark and Notebooks&#39;,
- &#39;Q&amp;A Voting App with RethinkDB&#39;,
- &#39;Install IBM Database Conversion Workbench&#39;,
- &#39;Data Science Experience Documentation&#39;,
- &#39;GeoFile: Using OpenStreetMap Data in Compose PostgreSQL - Part II&#39;,
- &#39;Graph-based machine learning&#39;,
- &#39;Modern Machine Learning Algorithms&#39;,
- &#39;Build an app using IBM Graph&#39;,
- &#39;Introducing Streams Designer&#39;,
- &#39;8 ways to turn data into value with Apache Spark machine learning&#39;,
- &#39;Predict Flight Delays with Apache Spark MLLib, FlightStats, and Weather Data&#39;,
- &#39;Introducing the Simple Autocomplete Service&#39;,
- &#39;Transfer Learning for Flight Delay Prediction via Variational Autoencoders&#39;,
- &#39;Advancements in the Spark Community&#39;,
- &#39;How to tame the valley — Hessian-free hacks for optimizing large #NeuralNetworks – Autonomous Agents\u200a—\u200a#AI&#39;,
- &#39;readr 1.0.0&#39;,
- &#39;Metrics Maven: Window Functions in PostgreSQL&#39;,
- &#39;Data visualization: The importance of excluding unnecessary details&#39;,
- &#39;Compose PostgreSQL: Making users and more&#39;,
- &#39;Predicting gentrification using longitudinal census data&#39;,
- &#39;InterConnect with us&#39;,
- &#39;Introducing Cloudant FoodTracker: An Offline-First App&#39;,
- &#39;Find Mongo Document By ID Using The PHP Library&#39;,
- &#39;An Introduction to Scientific Python (and a Bit of the Maths Behind It) – NumPy&#39;,
- &#39;Metrics Maven:  Calculating a Moving Average in PostgreSQL&#39;,
- &#39;Offline-First Apps with PouchDB&#39;,
- &#39;Simple Metrics Tutorial Part 1: Metrics Collection -- Code a web analytics app with Node.js and IBM Cloudant&#39;,
- &#39;Could PostgreSQL 9.5 be your next JSON database?&#39;,
- &#39;This Week in Data Science (September 27, 2016)&#39;,
- &#39;The 3 Kinds of Context: Machine Learning and the Art of the Frame&#39;,
- &#39;Tour the Community in DSX&#39;,
- &#39;This Week in Data Science (May 2, 2017)&#39;,
- &#39;Apache Spark @Scale: A 60 TB+ production use case&#39;,
- &#39;This Week in Data Science (May 16, 2017)&#39;,
- &#39;Tutorial: How to Cloudant Geospatial in Action&#39;,
- &#39;Leverage Scikit-Learn Models with Core ML&#39;,
- &#39;Transform anything into a vector&#39;,
- &#39;Build a logistic regression model with WML &amp; DSX&#39;,
- &#34;Compose&#39;s first graph database: JanusGraph&#34;,
- &#39;Tutorial: How to load Twitter data in IBM dashDB &#39;,
- &#39;testthat 1.0.0&#39;,
- &#39;Metrics Maven: Beyond Average&#39;,
- &#39;This Week in Data Science (July 26, 2016)&#39;,
- &#39;Simple Metrics Collector Microservices Edition&#39;,
- &#39;Top 20 R Machine Learning and Data Science packages&#39;,
- &#39;New Import for Compose MongoDB&#39;,
- &#39;Website Engagement Tracking with Elasticsearch&#39;,
- &#39;9 Mistakes to Avoid When Starting Your Career in Data Science&#39;,
- &#39;Deploy Your PHP Application to Bluemix&#39;,
- &#39;Armand Ruiz Gabernet, IBM - BigDataNYC #BigDataNYC 2016 #theCUBE&#39;,
- &#39;This Week in Data Science (December 20, 2016)&#39;,
- &#39;Improving quality of life with Spark-empowered machine learning&#39;,
- &#39;This Week in Data Science (November 08, 2016)&#39;,
- &#39;How to map USA rivers using ggplot2&#39;,
- &#39;Seven Databases in Seven Days – Day 2: MongoDB&#39;,
- &#39;Use data assets in a project using IBM Data Catalog&#39;,
- &#39;How to choose a project to practice data science&#39;,
- &#39;How to ease the strain as your data volumes rise&#39;,
- &#39;How to Scale Your Analytics Using R&#39;,
- &#39;This Week in Data Science (November 15, 2016)&#39;,
- &#39;Building Offline-First, Progressive Web Apps&#39;,
- &#39;Data visualization: Function drives design&#39;,
- &#39;When machine learning matters · Erik Bernhardsson&#39;,
- &#39;Using Notebooks with PixieDust for Fast, Flexible, and Easier Data Analysis and Experimentation&#39;,
- &#39;TensorFlow Quick Tips&#39;,
- &#39;PixieDust: Magic for Your Python Notebook&#39;,
- &#39;Tidy up your Jupyter notebooks with scripts&#39;,
- &#39;Building Custom Machine Learning Algorithms With Apache SystemML&#39;,
- &#39;This Week in Data Science (February 28, 2017)&#39;,
- &#39;Use all the Databases&#39;,
- &#39;Finding the user in data science&#39;,
- &#39;Practical Tutorial on Random Forest and Parameter Tuning in R&#39;,
- &#39;Apache Spark™ 2.0: Migrating Applications&#39;,
- &#39;Making the Most of Compose - Customer One Preschool&#39;,
- &#39;Launch a Spark job using spark-submit&#39;,
- &#39;A Dynamic Duo – Inside Machine learning – Medium&#39;,
- &#39;Picking SQL or NoSQL? – A Compose View&#39;,
- &#39;Watson Machine Learning for Developers&#39;,
- &#34;What&#39;s all the hoopla about graph databases?&#34;,
- &#39;Python Machine Learning: Scikit-Learn Tutorial&#39;,
- &#39;Statistics for Hackers&#39;,
- &#39;RethinkDB Joinery&#39;,
- &#39;cloudant/meteor-couchdb&#39;,
- &#39;Search Faceting from Scratch [Tutorial]&#39;,
- &#39;DataLayer Conference: Translating Backend Data to Frontend Needs&#39;,
- &#34;Feature importance and why it&#39;s important&#34;,
- &#39;Simple Graphing with IPython and\xa0Pandas&#39;,
- &#39;Collecting Data Science Cheat Sheets&#39;,
- &#39;How to Script Painless-ly in Elasticsearch&#39;,
- &#39;This Week in Data Science (November 01, 2016)&#39;,
- &#39;Simple CouchDB and Cloudant Backup&#39;,
- &#39;This Week in Data Science (February 7, 2017)&#39;,
- &#39;Execute Common HTTP API Commands&#39;,
- &#39;Best packages for data manipulation in R&#39;,
- &#39;Designing the UFC Moneyball&#39;,
- &#39;Emile Baizel &amp; Building a Fintech Bot on MongoDB and Elasticsearch&#39;,
- &#39;Reddit sentiment analysis in SparkR and CouchDB&#39;,
- &#39;Neural networks for beginners: popular types and applications&#39;,
- &#39;0 to Life-Changing App: Scala First Steps and an Interview with Jakob Odersky&#39;,
- &#39;This Week in Data Science (July 12, 2016)&#39;,
- &#39;Don’t throw more data at the problem! Here’s how to unlock true value from your data lake&#39;,
- &#39;How to use Db2 Warehouse on Cloud in Data Science Experience notebooks&#39;,
- &#39;Offline-first QR-code Badge Scanner&#39;,
- &#39;Search Slack with IBM Graph&#39;,
- &#39;ibm-cds-labs/hybrid-cloud-tutorial&#39;,
- &#39;Campus Discounts - Making the Most of Compose (customer)&#39;,
- &#39;Jupyter Notebook Tutorial&#39;,
- &#39;How to solve 90% of NLP problems&#39;,
- &#39;Predicting Flight Cancellations Using Weather Data, Part 3&#39;,
- &#39;Use dashDB with Tableau&#39;,
- &#39;Metrics Maven: Calculating an Exponentially Weighted Moving Average in PostgreSQL&#39;,
- &#39;DataLayer Exposed: Jonas Helfer &amp; Joins Across Databases with GraphQL&#39;,
- &#39;Data Science of Variable Selection&#39;,
- &#39;d3heatmap: Interactive heat maps&#39;,
- &#39;Citizen Scientist finds “Death Star” in SETI data set&#39;,
- &#39;Location Tracker – Part 2&#39;,
- &#39;Use the Machine Learning Library in Spark&#39;,
- &#39;An Introduction to Stock Market Data Analysis with R (Part 1)&#39;,
- &#39;Portal Powerups and Deleted Deployments&#39;,
- &#39;Learn TensorFlow and Deep Learning Together and Now!&#39;,
- &#39;Making the Most of Compose – Customer: Classcraft&#39;,
- &#39;Push Notifications With MongoDB&#39;,
- &#39;Introducing Cloudant Local&#39;,
- &#39;Node.js data science notebooks – IBM Watson Data Lab – Medium&#39;,
- &#39;RethinkDB and Compose&#39;,
- &#39;Got a PhD? Struggling To Be a Data Scientist?&#39;,
- &#39;Deeper into RethinkDB 2.3&#39;,
- &#39;Simple Data Pipe Connectors&#39;,
- &#39;10 Must Attend Data Science, ML and AI Conferences in 2018&#39;,
- &#39;Introducing the Simple Search Service: Faceted search API made easy&#39;,
- &#39;A Way with Words and Code – IBM Watson Data Lab – Medium&#39;,
- &#39;Top analytics tools in 2016&#39;,
- &#39;Introducing OpenWhisk: Microservices Made Easy&#39;,
- &#39;Is PostgreSQL Your Next JSON Database?&#39;,
- &#39;Power Prototyping with MongoDB and Node-RED&#39;,
- &#39;Offline First at Offline Camp California&#39;,
- &#39;Bayesian Regularization for #NeuralNetworks – Autonomous Agents\u200a—\u200a#AI&#39;,
- &#39;Overview of RStudio IDE in DSX&#39;,
- &#39;Data science expert interview: Holden Karau&#39;,
- &#39;Improving the ROI of Big Data and Analytics through Leveraging New Sources of Data&#39;,
- &#39;Location Tracker&#39;,
- &#39;Geospatial query with Cloudant Search&#39;,
- &#34;Compose and RethinkDB 2.3&#39;s drivers&#34;,
- &#39;Foundational Methodology for Data Science&#39;,
- &#39;Common Excel Tasks Demonstrated in\xa0Pandas&#39;,
- &#39;Horizontal Scaling arrives on Compose Enterprise&#39;,
- &#39;This Week in Data Science (March 28, 2017)&#39;,
- &#39;Sensor Sensibility at Hull Digital&#39;,
- &#39;Spark 2.1 and Job Monitoring Available in DSX&#39;,
- &#39;Data science for real-time streaming analytics&#39;,
- &#39;Artificial Intelligence, Ethically Speaking – Inside Machine learning – Medium&#39;,
- &#39;Creating an AWS VPC and Secured Compose MongoDB with Terraform&#39;,
- &#39;Cloudant Query Grows Up to Handle Ad Hoc Queries&#39;,
- &#39;New Simple Data Pipe: Easier cloud data movement&#39;,
- &#39;DataLayer Conference: Storage Wars - The Art Genome Project&#39;,
- &#39;AI Revolutionizes Industries, not World Domination&#39;,
- &#39;DataLayer Conference: Keynote with Mitch Pirtle, CapitalOne&#39;,
- &#39;Analyze open data sets using pandas in a Python notebook&#39;,
- &#39;Serverless Autocomplete – IBM Watson Data Lab – Medium&#39;,
- &#39;Charity Majors on Observability &amp; The Glorious Future&#39;,
- &#34;A Beginner&#39;s Guide to Variational Methods&#34;,
- &#39;Load XML data into dashDB&#39;,
- &#39;Compose Tips: Dates and Dating in MongoDB&#39;,
- &#39;Understanding Mango View-Based Indexes vs. Search-Based Indexes in Cloudant and CouchDB&#39;,
- &#39;Building a Java EE webapp on IBM Bluemix Using Watson and Cloudant&#39;,
- &#39;This Week in Data Science (February 14, 2017)&#39;,
- &#39;Thinky and RethinkDB&#39;,
- &#39;The Potency of Idempotent with RabbitMQ and MongoDB Upsert&#39;,
- &#39;Modeling energy usage in New York City&#39;,
- &#34;Compose&#39;s 2016 — All about the database&#34;,
- &#39;Data Wrangling with dplyr and tidyr Cheat Sheet&#39;,
- &#39;Connecting PouchDB to Cloudant on IBM Bluemix&#39;,
- &#39;Seven Databases in Seven Days – Day 1: RethinkDB&#39;,
- &#39;Web Picks (week of 28 December 2016)&#39;,
- &#39;Scaling Offline First with Envoy — Offline Camp&#39;,
- &#39;A tour of the Redis stars&#39;,
- &#39;How smart catalogs can turn the big data flood into an ocean of opportunity&#39;,
- &#39;Authentication for Cloudant Envoy Apps, Part III – IBM Watson Data Lab&#39;,
- &#39;Using BigDL in DSX for Deep Learning on Spark&#39;,
- &#39;Using apply, sapply, lapply in R&#39;,
- &#39;A Visual Explanation of the Back Propagation Algorithm for Neural Networks&#39;,
- &#34;Move data to the Cloud with dashDB&#39;s MoveToCloud script&#34;,
- &#39;Bradley Holt on NoSQL (Channel 9)&#39;,
- &#39;Publish apps that use R analysis with Shiny and dashDB&#39;,
- &#39;Serverless Data Flow Sequencing with Watson Data API and IBM Cloud Functions&#39;,
- &#39;Web Picks (week of 23 January 2017)&#39;,
- &#39;Speed your SQL Queries with Spark SQL&#39;,
- &#39;Self-service data preparation with IBM Data Refinery&#39;,
- &#39;Bayesian Nonparametric Models – Stats and Bots&#39;,
- &#39;3 Scenarios for Machine Learning on Multicloud&#39;,
- &#39;How to enable a Redis cache for PostgreSQL with Entity Framework 6&#39;,
- &#39;Improving Real-Time Object Detection with YOLO&#39;,
- &#39;Deep Learning with Data Science Experience&#39;,
- &#39;Building IoT Apps on Cloudant, with Kiwi Wearables&#39;,
- &#39;Getting started with GraphFrames in Apache Spark™&#39;,
- &#39;Spark 1.4 for RStudio&#39;,
- &#39;I Am Not a Data Scientist – IBM Watson Data Lab&#39;,
- &#39;Making the Most of Compose – Customer: Omni Labs&#39;,
- &#39;Mongo Metrics: Calculating the Mode&#39;,
- &#39;Notebooks: A power tool for data scientists&#39;,
- &#39;SEIUM Conference and HeartBits Hackathon&#39;,
- &#39;Offline Verse&#39;,
- &#39;Document Validation in MongoDB By Example&#39;,
- &#39;Introducing the new Cloudant query&#39;,
- &#39;Querying your Cloudant database with SQL – IBM Watson Data Lab – Medium&#39;,
- &#39;Building Your First Machine Learning System &#39;,
- &#39;Data science expert interview: Dez Blanchfield, Craig Brown, David Mathison, Jennifer Shin and Mike Tamir part 2&#39;,
- &#39;Web Picks (week of 4 September 2017)&#39;,
- &#39;Lifelong (machine) learning: how automation can help your models get smarter over time&#39;,
- &#39;Apple, IBM add machine learning to partnership with Watson-Core ML coupling&#39;,
- &#39;Redis PubSub, Node, and Socket.io&#39;,
- &#39;xml2 1.0.0&#39;,
- &#39;Building a Cloudant cluster of Raspberry Pis&#39;,
- &#39;Open Sourcing 223GB of Driving Data – Udacity Inc&#39;,
- &#39;etcd 2 to 3: new APIs and new possibilities&#39;,
- &#39;The Machine Learning Database&#39;,
- &#39;Replicate a Sample Database&#39;,
- &#34;IBM&#39;s New Builders podcast&#34;,
- &#34;December &#39;16 RStudio Tips and Tricks&#34;,
- &#39;Introducing spark-cloudant, an open source Spark connector for Cloudant data&#39;,
- &#39;Redis Configuration Controls&#39;,
- &#39;Developing IBM Streams applications with the Python API (Version 1.6)&#39;,
- &#39;Sentiment Analysis of Reddit AMAs&#39;,
- &#39;Sector Correlations Shiny App&#39;,
- &#39;This Week in Data Science (September 06, 2016)&#39;,
- &#39;Learning Statistics on Youtube&#39;,
- &#39;Configuring Compose Enterprise on Google Cloud Platform&#39;,
- &#39;Simple data visualization in Apache CouchDB™ – IBM Watson Data Lab – Medium&#39;,
- &#39;Statistical Bias Types explained (with examples)&#39;,
- &#39;How to analyze your pipe runs with Bunyan&#39;,
- &#39;Do More with Compose PostgreSQL using Zapier&#39;,
- &#39;Integrate dashDB with Excel&#39;,
- &#39;Work with Data Connections in DSX&#39;,
- &#39;Deep learning trends and an example&#39;,
- &#39;How to talk raw Redis&#39;,
- &#39;Using Lucene search from within CouchDB&#39;,
- &#34;Analyzing Pet Name Trends with PostgreSQL&#39;s crosstabview&#34;,
- &#39;Customer: Drone Deploy Conquers the Data Layer&#39;,
- &#39;Twelve\xa0ways to color a map of Africa using Brunel&#39;,
- &#39;Apache Spark 2.0: Machine Learning. Under the Hood and Over the Rainbow.&#39;,
- &#39;Metrics Maven: Crosstab Revisited - Pivoting Wisely in PostgreSQL&#39;,
- &#39;Using Cloudant to enhance uploads for IBM Graph&#39;,
- &#34;Compose for MySQL - A developer&#39;s view&#34;,
- &#39;This Week in Data Science (January 31, 2017)&#39;,
- &#39;Writing Data Directly to Cloudant from Slack&#39;,
- &#39;Elasticsearch Tools &amp; Compose&#39;,
- &#39;A guide to receptive field arithmetic for Convolutional Neural Networks&#39;,
- &#39;Understand how replication works&#39;,
- &#39;Open Data Day, Economic Justice, and Civic Engagement&#39;,
- &#39;10 Common Misconceptions about CouchDB&#39;,
- &#39;Awesome deep learning papers&#39;,
- &#39;Making of a Smart Business Chatbot: Part 3&#39;,
- &#39;Dimensionality Reduction Algorithms&#39;,
- &#39;Join and enrich data from multiple sources&#39;,
- &#39;Brunel In Jupyter&#39;,
- &#34;Introducing Compose&#39;s Big Bits&#34;,
- &#39;Accessing Relational Databases Using Go&#39;,
- &#39;Accelerate Your Workflow with DSX&#39;,
- &#39;Backpropagation — How Neural Networks Learn Complex Behaviors&#39;,
- &#39;This Week in Data Science (August 30, 2016)&#39;,
- &#39;MySQL for JSON: Generated Columns and Indexing&#39;,
- &#39;Moving to Medium&#39;,
- &#39;DataLayer Conference: Ambry at LinkedIn&#39;,
- &#39;glynnbird/couchimport&#39;,
- &#39;Perform Group Facet And Geo Searches with Cloudant&#39;,
- &#39;Time Series Prediction Using Recurrent Neural Networks (LSTMs)&#39;,
- &#39;Probabilistic Graphical Models Tutorial\u200a—\u200aPart 2 – Stats and Bots&#39;,
- &#39;On-demand backups with the Compose API and Node.js&#39;,
- &#39;What is machine learning?&#39;,
- &#39;Some Random Weekend Reading&#39;,
- &#39;Neurally Embedded Emojis&#39;,
- &#39;Leverage Python, SciKit, and text classification for behavioral profiling&#39;,
- &#39;Authentication for Cloudant Envoy Apps, Part II – IBM Watson Data Lab&#39;,
- &#39;Use dashDB with Pyspark and Pandas&#39;,
- &#39;Using shell scripts to control data flows created in Watson applications&#39;,
- &#39;CouchDB Document Copy and Transform Service&#39;,
- &#39;Getting started with Elasticsearch and Node.js - part 3&#39;,
- &#39;Mastering PostgreSQL tools: Filters and Foreign Data Wrappers&#39;,
- &#39;Manage Object Storage in DSX&#39;,
- &#39;MyCheatSheets.com&#39;,
- &#39;Map Your Cloud Data&#39;,
- &#39;Introducing IBM Graph&#39;,
- &#39;Enhanced Cloudant Search with Watson Alchemy&#39;,
- &#39;Now available on IBM Bluemix&#39;,
- &#39;Introduction to Market Basket Analysis in\xa0Python&#39;,
- &#39;Brunel: Imitation is a sincere form of flattery&#39;,
- &#34;DataLayer Conference: Porting Zendesk&#39;s Existing App to GraphQL&#34;,
- &#39;Deploying Logshare with Compose and Bluemix&#39;,
- &#39;A Deep Dive into Offline-First with PouchDB and IBM Cloudant&#39;,
- &#39;Open Source for Fun, Learning, and Kudos – IBM Watson Data Lab – Medium&#39;,
- &#39;Creating Notebooks in IBM Data Science Experience&#39;,
- &#39;Challenges in Deep Learning&#39;,
- &#39;Generalization in Deep Learning&#39;,
- &#39;Authenticating Node-RED with JSONWebToken, part 1&#39;,
- &#39;Get started with Streams Designer by following this roadmap&#39;,
- &#39;GeoFile: Elasticsearch Geo Queries&#39;,
- &#39;Metrics Maven: Creating Pivot Tables in PostgreSQL Using Crosstab&#39;,
- &#39;Load data from the Cloud into dashDB&#39;,
- &#39;Introducing Meteor Toys 3, Because Toys Make Life Better&#39;,
- &#39;This Week in Data Science (October 25, 2016)&#39;,
- &#39;Use the secondary index in Cloudant&#39;,
- &#39;Fighting Gerrymandering: Using data science to draw fairer congressional districts&#39;,
- &#39;Announcing DSX Environments in Beta!&#39;,
- &#39;This Week in Data Science (April 25, 2017)&#39;,
- &#39;IBM Data Science Experience White paper - SparkR Transforming R into a tool for big data analytics&#39;,
- &#39;Collect Your Own Fitbit Data with Python&#39;,
- &#39;Do I need to learn R?&#39;,
- &#39;How IBM builds an effective data science team&#39;,
- &#39;sparklyr — R interface for Apache Spark&#39;,
- &#39;Build the search index in Cloudant&#39;,
- &#39;Run Shiny Applications in RStudio in DSX&#39;,
- &#39;Deep Learning, Structure and Innate Priors&#39;,
- &#39;Lorna Jane Mitchell &amp; Surviving Failure with RabbitMQ&#39;,
- &#39;Meteor 1.4, MongoDB and Compose - Ready to Oplog&#39;,
- &#39;Optimizing a marketing campaign: Moving from predictions to actions&#39;,
- &#39;Intro to Cloudant Query, declarative query API for JSON&#39;,
- &#39;Location Tracker: Offline first design in Swift&#39;,
- &#39;DSX: Hybrid Mode&#39;,
- &#39;Migration from IBM Bluemix Data Connect API (activities) to IBM Watson Data API (data flows)&#39;,
- &#39;This Week in Data Science (October 18, 2016)&#39;,
- &#34;Go Serverless with Apex and Compose&#39;s MongoDB&#34;,
- &#39;Clustering: A Guide for the Perplexed&#39;,
- &#39;Visualising Data the Node.js Way&#39;,
- &#39;Snowzilla!&#39;,
- &#39;Upload data and create Data Frames in Jupyter Notebooks&#39;,
- &#39;Making the most of Compose - Customer: FATHOM&#39;,
- &#39;Integrate User Management and Cloudant Query into a Node.js &amp; Cloudant Application&#39;,
- &#39;Have you had “The Talk” with your chatbot about graph data structures?&#39;,
- &#39;Working with notebooks in DSX&#39;,
- &#39;Introducing Cloudant Sync, Open Source Libraries for Mobile&#39;,
- &#39;Apache SystemML&#39;,
- &#39;ggplot2 2.2.0 coming soon!&#39;,
- &#39;Transporter 0.3.0 Released - Transporter Streamlined&#39;,
- &#39;Use dashDB with Watson Analytics&#39;,
- &#39;Data Structures Related to Machine Learning Algorithms&#39;,
- &#39;Analyze Market Trends in Twitter Using Apache Spark, Python, and dashDB&#39;,
- &#39;A Classification Problem&#39;,
- &#39;What is text analytics?&#39;,
- &#39;An interview with Pythonista Katharine Jarmul&#39;,
- &#39;Continuous Learning on Watson&#39;,
- &#39;Load geospatial data into dashDB to analyze in Esri ArcGIS&#39;,
- &#39;Introduction to document conflicts – Part One&#39;,
- &#39;Why Replication is Awesome&#39;,
- &#39;Aggregations in MongoDB by Example&#39;,
- &#39;Apache Spark™ 2.0: Impressive Improvements to Spark SQL&#39;,
- &#39;Introducing IBM Watson Studio &#39;,
- &#39;Building better database bridges with the new Compose Transporter&#39;,
- &#39;Let the Build Server cf push – IBM Watson Data Lab&#39;,
- &#39;Authentication for Cloudant Envoy Apps, Part I – IBM Watson Data Lab&#39;,
- &#39;Seven Databases in Seven Days – Day 4: Cloudant&#39;,
- &#39;Run DSX Notebooks on Amazon EMR&#39;,
- &#39;How Compose is Helping Educational Organizations Innovate&#39;,
- &#39;DataLayer Conference: Rethinking Indexing in Data Stores with Replex&#39;,
- &#39;Using Apache Spark as a parallel processing framework for accessing REST based data services&#39;,
- &#39;Predicting The 2016 US Presidential Election&#39;,
- &#39;Read and Write Data To and From Amazon S3 Buckets in Rstudio&#39;,
- &#39;The Well Connected Rabbit&#39;,
- &#39;Metrics Maven: Meet in the Middle - Median in PostgreSQL&#39;,
- &#39;Show Twitter trends with Spark Streaming and IBM Watson&#39;,
- &#39;Persistent changes to Spark Config in DSX&#39;,
- &#39;Window Frames in PostgreSQL&#39;,
- &#39;This Week in Data Science (November 29, 2016)&#39;,
- &#39;Cloudant Learning Center&#39;,
- &#34;Let&#39;s Encrypt TLS Certificates&#34;,
- &#39;Using GitHub for project control in DSX&#39;,
- &#34;Using RethinkDB 2.3&#39;s user authentication&#34;,
- &#39;0 to Life-Changing App: New Apache SystemML API on Spark Shell&#39;,
- &#39;Adoption of machine learning to software failure prediction&#39;,
- &#39;Join us for Offline Camp&#39;,
- &#39;Custom Cloudant Replication – IBM Watson Data Lab – Medium&#39;,
- &#39;Using Machine Learning to Predict Value of Homes On Airbnb&#39;,
- &#39;Using the Maker Palette in the IBM Data Science Experience&#39;,
- &#39;IBM Data Catalog Overview&#39;,
- &#39;PostgreSQL, Backups and everything you need to know&#39;,
- &#39;Geospatial Nearest Neighbor Query&#39;,
- &#39;CACHE Table in Apache Spark SQL&#39;,
- &#39;Navigating SXSW via cognitive chatbot – IBM Watson Data Lab&#39;,
- &#39;Brunel 2.0 Preview&#39;,
- &#39;Web application state, à la Dogfight (1983) – IBM Watson Data Lab&#39;,
- &#39;Create Tables in dashDB&#39;,
- &#39;Turn Small Data Into Smart Data. Part 3&#39;,
- &#39;Migrating to Python 3 with pleasure&#39;,
- &#39;IBM Data Catalog is now generally available&#39;,
- &#39;Data Science Experience Demo: Modeling energy usage in NYC&#39;,
- &#39;Why Relational Databases and R?&#39;,
- &#39;The New Builders podcast Ep 3: Collaboration&#39;,
- &#39;Making the Most of Compose - Customer DroneDeploy&#39;,
- &#39;Learn how read/write ops in CouchDB 2.0 work in a cluster&#39;,
- &#39;A Depth-First Look at Watson Conversation + Gremlin + JanusGraph&#39;,
- &#39;Customer: iCars Conquers the Data Layer&#39;,
- &#39;Build a simple data portal with Python and IBM Object Storage&#39;,
- &#39;Building OHLC Data in PostgreSQL&#39;,
- &#39;IBM Watson Machine Learning: Get Started&#39;,
- &#39;Database changes and search indexes that go together like wine &amp; cheese – IBM Watson Data Lab&#39;,
- &#39;Seven Databases in Seven Days – Day 7: Redis&#39;,
- &#39;This Week in Data Science (January 24, 2017)&#39;,
- &#39;Multiplying Microservices&#39;,
- &#39;Introducing Cloudant Query&#39;,
- &#39;Load Db2 Warehouse on Cloud data with Apache Spark in DSX&#39;,
- &#39;Declarative Machine Learning&#39;,
- &#39;How Marketing Technology Companies Use Compose to Conquer Their Data Layer&#39;,
- &#39;What’s New in Data Refinery?&#39;,
- &#39;Get in line! An Intro to Queues and PubSub&#39;,
- &#39;This Week in Data Science (April 11, 2017)&#39;,
- &#39;MySQL for your JSON&#39;,
- &#39;On the Passage of HB2 in North Carolina&#39;,
- &#39;Change Database Permissions in Cloudant&#39;,
- &#39;Data Privacy and Governance Update&#39;,
- &#39;Baby’s first IBM Graph app using Node.js – IBM Watson Data Lab&#39;,
- &#39;Database Design, Load, and Query from R&#39;,
- &#39;Make machine learning a reality for your enterprise&#39;,
- &#39;Bluemix Object Storage Enhanced: Update Precipitation Analysis Sample Notebook&#39;,
- &#39;Getting Started with Compose and Bluemix&#39;,
- &#39;10 Things I Hate About Your API — Amanda Folson – IBM Watson Data Lab – Medium&#39;,
- &#39;Hacking vs. Prototyping vs. Production Code – IBM Watson Data Lab – Medium&#39;,
- &#39;Web Picks - DataMiningApps&#39;,
- &#39;This Week in Data Science (September 13, 2016)&#39;,
- &#34;I&#39;d Rather Predict Basketball Games Than Elections: Elastic NBA Rankings&#34;,
- &#39;What is Spark?&#39;,
- &#39;Use IBM Data Science Experience to detect time series anomalies&#39;,
- &#39;Introduction to Neural Networks, Advantages and Applications&#39;,
- &#34;Compose&#39;s Data Browser comes to Elasticsearch&#34;,
- &#39;GeoFile: Converting and importing shapefiles for Compose PostgreSQL and MongoDB&#39;,
- &#39;What is Hadoop?&#39;,
- &#39;Connect apps to dashDB&#39;,
- &#39;What’s new in the Streaming Analytics service on Bluemix&#39;,
- &#39;Using Cloudant with Node.js&#39;,
- &#39;Use advanced techniques with the secondary index in Cloudant&#39;,
- &#39;Intelligent applications - Apache Spark&#39;,
- &#39;Publish notebooks to GitHub in DSX&#39;,
- &#39;Gradient Boosting Explained&#39;,
- &#34;Compose PostgreSQL&#39;s new Performance and Extensions views&#34;,
- &#39;Markdown for Jupyter notebooks cheatsheet&#39;,
- &#39;Create a business intelligence and analytics service in Ruby with the dashDB            service&#39;,
- &#39;Drowning in data sources: How data cataloging could fix your findability problems&#39;,
- &#39;Optimization for Deep Learning Highlights in 2017&#39;,
- &#39;Building Mobile Apps At The Geospatial Edge For Shipping, Logistics, &amp; Transportation&#39;,
- &#39;Using Deep Learning With Keras To Predict Customer Churn&#39;,
- &#39;Convert IBM Puredata for Analytics to dashDB&#39;,
- &#39;Compose Enterprise comes to Bluemix&#39;,
- &#39;A Moving Average Trading Strategy&#39;,
- &#39;Use Spark R to Load and Analyze Data&#39;,
- &#39;Get Started With CouchDB Using PHP and Guzzle&#39;,
- &#39;Getting started with Elasticsearch and Node.js - part 4&#39;,
- &#39;Amy Unruh &amp; Scaling Out SQL Databases with Spanner&#39;,
- &#39;Hoodie App Tracker is now deployable to IBM Bluemix&#39;,
- &#39;This Week in Data Science (May 23, 2017)&#39;,
- &#39;Web Picks by DataMiningApps&#39;,
- &#39;This Week in Data Science (October 11, 2016)&#39;,
- &#39;Python For Loops Explained (Python for Data Science Basics #5)&#39;,
- &#39;Top 10 Machine Learning Algorithms for Beginners&#39;,
- &#39;How I used serverless infrastructure to build a large-scale petition system – IBM Watson Data Lab&#39;,
- &#39;Backups, etcd and etcdtool&#39;,
- &#39;Bach - The Compose API at your command(line)&#39;,
- &#39;Let data dictate the visualization&#39;,
- &#39;The Difference Between AI, Machine Learning, and Deep Learning?&#39;,
- &#39;Defensive IBM Object Storage Containers – IBM Watson Data Lab – Medium&#39;,
- &#39;This Week in Data Science (August 02, 2016)&#39;,
- &#39;Connecting to Compose MongoDB with Java and SSL&#39;,
- &#39;This Week in Data Science (December 27, 2016)&#39;,
- &#39;Connection Pooling with MongoDB&#39;,
- &#39;Conquer Email with Postal and Compose&#39;,
- &#39;Use dashDB with IBM Embeddable Reporting Service&#39;,
- &#39;Data science in the cloud&#39;,
- &#39;Introduction to Graph Databases&#39;,
- &#39;This Week in Data Science (May 30, 2017)&#39;,
- &#39;Put a human face on machine learning with WML &amp; DSX&#39;,
- &#39;Use #Bluemix DashDB and R to solve a Kaggle Competition&#39;,
- &#39;Search Indexes&#39;,
- &#39;Coding for Eventual Consistency&#39;,
- &#39;The Art of Side Effects: Curing Apache Spark Streaming’s Amnesia (Part 1/2)&#39;,
- &#39;Simple CSV Import For CouchDB – IBM Watson Data Lab – Medium&#39;,
- &#39;Shaping data with IBM Data Refinery&#39;,
- &#39;Cloud Data Warehouse Made Easy&#39;,
- &#39;Better infrastructure maintenance with offline mobile maps&#39;,
- &#39;Debugging Lua in Redis&#39;,
- &#39;Learn about Data Science in World of Watson&#39;,
- &#39;Share the (PixieDust) Magic – IBM Watson Data Lab – Medium&#39;,
- &#39;Scale a Web App with Microservices and IBM Message Hub&#39;,
- &#39;Data science platforms are on the rise and IBM is leading the way&#39;,
- &#39;New Shiny cheat sheet and video tutorial&#39;,
- &#39;A guest video post&#39;,
- &#39;A How-to for migrating from etcd 2 to etcd 3&#39;,
- &#39;10 tips on using Jupyter Notebook&#39;,
- &#39;Create a project and add data using IBM Data Refinery&#39;,
- &#39;What You Need to Know to Extend NiFi&#39;,
- &#39;OSCON Europe Talk Review&#39;,
- &#39;The Two Phases of Gradient Descent in Deep Learning&#39;,
- &#39;Move over, MatPlotLib – IBM Watson Data Lab – Medium&#39;,
- &#39;dplyr 0.5.0&#39;,
- &#39;A Deep Dive into Offline First with PouchDB and IBM Cloudant&#39;,
- &#39;Embed rich reports in your applications&#39;,
- &#39;Compose PostgreSQL powers up to 9.6&#39;,
- &#39;Use cURL to set up replication&#39;,
- &#39;Convert data from Oracle to dashDB&#39;,
- &#39;Sentiment Analysis of Reddit AMAs using dashDB and R&#39;,
- &#39;DataLayer Exposed: Ross Kukulinski &amp; The State Of State In Containers&#39;,
- &#39;Getting started with Python&#39;,
- &#39;IBM Analytics at the Esri Partner/Developer Summit&#39;,
- &#39;Data Visualization with ggplot2 Cheat Sheet&#39;,
- &#39;Zero to Kubernetes on the IBM Bluemix Container Service&#39;,
- &#39;Syncing Car Telemetry Data in Real-Time: Ford’s OpenXC API and Cloudant’s Traffic Tamer App&#39;,
- &#39;Trust in Data Science&#39;,
- &#39;DataLayer Conference: Scylla, the High-Performance Cassandra-Successor&#39;,
- &#39;This Week in Data Science (December 13, 2016)&#39;,
- &#39;5-minute Signup Forms with Node-RED and Compose&#39;,
- &#39;DataLayer Conference: Bootstrapping a Startup using Compose&#39;,
- &#39;Offline-First iOS Apps with Swift &amp; Cloudant Sync; Part 3&#39;,
- &#39;Which One to Choose for Your Problem&#39;,
- &#39;RethinkDB lives, Redis and PostgreSQL futures, FOSDEM, Rust and Wuzz&#39;,
- &#39;Build a Naive-Bayes Model with WML &amp; DSX&#39;,
- &#39;Cloudant and Node.js Made Simple with the silverlining Library – IBM Watson Data Lab&#39;,
- &#34;Let&#39;s have some fun with NFL data&#34;,
- &#39;Mongo Metrics: Calculating the Mean&#39;,
- &#39;This Week in Data Science (April 4, 2017)&#39;,
- &#39;Load Cloudant Data in Apache Spark Using a Scala Notebook&#39;,
- &#39;Set Up Pre Authenticated cURL&#39;,
- &#39;Data Connect: Cloud data prep and movement&#39;,
- &#39;RStudio IDE  Cheat Sheet&#39;,
- &#39;DT: An R interface to the DataTables library&#39;,
- &#34;How to watch and wait with Compose&#39;s Bach and API&#34;,
- &#39;The t-distribution: a key statistical concept discovered by a beer brewery&#39;,
- &#39;You could be looking at it all wrong&#39;,
- &#39;Build an iOS 8 App with Bluemix and the MobileFirst Platform for            iOS&#39;,
- &#39;How can data scientists collaborate to build better business&#39;,
- &#39;Making the Most of Compose – Case Study: Differential&#39;,
- &#39;Getting started with Elasticsearch and Node.js - part 1&#39;,
- &#39;Offline First: What’s in a name? – IBM Watson Data Lab&#39;,
- &#39;Moving data from DocumentDB to Cloudant or CouchDB – IBM Watson Data Lab&#39;,
- &#39;Getting started with Elasticsearch and Node.js - part 5&#39;,
- &#39;The New Builders Ep. 13: All the Data That’s Fit to Analyze&#39;,
- &#39;Offline and radioactively clean – IBM Watson Data Lab – Medium&#39;,
- &#39;Use the Primary Index&#39;,
- &#39;Data-Driven Shopper Insights&#39;,
- &#39;Why IT Consulting and Developer Services Companies Love Compose&#39;,
- &#39;Transporter, MongoDB and synchronization&#39;,
- &#39;GeoFile: How to Transform OpenStreetMap Data into GeoJSON Using GDAL&#39;,
- &#39;tibble 1.1&#39;,
- &#39;The million dollar question: Where is my data?&#39;,
- &#39;This Week in Data Science (December 06, 2016)&#39;,
- &#39;Tidyverse practice: mapping large European cities&#39;,
- &#39;Building a business that combines human experts and data science&#39;,
- &#39;Offline-First iOS Apps with Swift &amp; Cloudant Sync; Part 2&#39;,
- &#39;tidyr 0.6.0&#39;,
- &#39;Making the Most of Compose – Customer: Flying Donut&#39;,
- &#39;Making the Most of Compose - Customer icanmakeitbetter&#39;,
- &#39;Using NoSQL DBaaS to launch Life Science Software&#39;,
- &#39;Apache Spark Analytics&#39;,
- &#39;Upload Files to IBM Data Science Experience Using the Command Line&#39;,
- &#39;NY Motor Vehicle Accident Analysis&#39;,
- &#39;Load dashDB Data with Apache Spark&#39;,
- &#39;Integration Testing Against Real Databases&#39;,
- &#39;Take a Dip into PostgreSQL Arrays&#39;,
- &#39;Kibana and Compose Elasticsearch&#39;,
- &#39;Random forest interpretation – conditional feature contributions&#39;,
- &#39;Access IBM Analytics for Apache Spark from RStudio&#39;,
- &#39;How Hyver uses ScyllaDB for API Key Management&#39;,
- &#39;Manage Your Business with Compose, Odoo, and Bluemix&#39;,
- &#39;Choosing a Cloudant Library – IBM Watson Data Lab – Medium&#39;,
- &#39;The 3 Cs of big data&#39;,
- &#39;How to move data with Transporter - from disk to database&#39;,
- &#39;Web Picks (December 2017)&#39;,
- &#39;Recommendation System Algorithms – Stats and Bots&#39;,
- &#39;A first peek at the next MongoDB&#39;,
- &#39;Simple Linear Regression? Do It The Bayesian Way&#39;,
- &#39;Back to basics — Jupyter notebooks&#39;,
- &#39;Trigger Periodic OpenWhisk Actions – IBM Watson Data Lab – Medium&#39;,
- &#39;Block chain technology, smart contracts and Ethereum&#39;,
- &#39;Accessing IBM Graph from Java – IBM Watson Data Lab&#39;,
- &#39;Making the Most of Compose Enterprise – Customer: ReadMe.io&#39;,
- &#39;Offline-First mobile apps with IBM Cloudant&#39;,
- &#39;Three reasons machine learning models go out of sync&#39;,
- &#39;PixieDust gets its first community-driven feature in 1.0.4&#39;,
- &#39;Can A.I. Be Taught to Explain Itself?&#39;,
- &#39;Connecting to RethinkDB with Elixir&#39;,
- &#39;Define indexes and queries&#39;,
- &#39;Seven Databases in Seven Days – Day 3: PostgreSQL&#39;,
- &#39;htmlwidgets: JavaScript data visualization for R&#39;,
- &#39;Redis Data Browser Now Available in Compose Dashboard&#39;,
- &#39;Top 6 Questions from our webinar on Top 6 Questions about SQL -&gt; NoSQL Migrations&#39;,
- &#39;Have you had “The Talk” with your chatbot about graph data structures? – IBM Watson Data Lab&#39;,
- &#39;Analyze Db2 Warehouse on Cloud data in RStudio in DSX&#39;,
- &#39;Importing Redis data into Compose Redis&#39;,
- &#39;Data Warehousing Features, Improvements, and Updates: Introducing the New DashDB&#39;,
- &#39;Create a Database and Add Documents to Database&#39;,
- &#39;Taking a Look at Robomongo and Studio 3T with Compose for MongoDB&#39;,
- &#39;This Week in Data Science (January 17, 2017)&#39;,
- &#39;Hyperparameter Optimization: Sven Hafeneger&#39;,
- &#39;Check the status of a replication job&#39;,
- &#39;Working with Db2 Warehouse on Cloud in Data Science Experience&#39;,
- &#39;UX Improvements to Cloudant Data-Replication&#39;,
- &#39;One year as a Data Scientist at Stack Overflow&#39;,
- &#39;Load JSON from Cloudant database into dashDB&#39;,
- &#39;Metrics Maven: Calculating a Weighted Average in PostgreSQL&#39;,
- &#39;Tracking Deployments of Sample Apps&#39;,
- &#39;Row Level Security with PostgreSQL 9.5&#39;,
- &#39;Perform sentiment analysis with LSTMs, using TensorFlow&#39;,
- &#39;Persisting Data for a Smarter Chatbot&#39;,
- &#39;BigInsights on Cloud for Analysts&#39;,
- &#34;H2O With IBM&#39;s Data Science Experience (DSX)&#34;,
- &#39;How to Perform a Logistic Regression in R&#39;,
- &#39;Importing Game of Thrones Data into Cloudant with the Simple Search Service&#39;,
- &#39;Getting started with Apache Mahout&#39;,
- &#39;Compose Enterprise Reloaded&#39;,
- &#39;Analysing Cloudant JSON in RunKit JavaScript Notebooks – IBM Watson Data Lab&#39;,
- &#39;GeoFile: Everything in the Radius with MongoDB Geospatial Queries&#39;,
- &#39;Analyzing streaming Data from Kafka Topics&#39;,
- &#39;Mongo to Mongo Data Moves with NiFi&#39;,
- &#39;Create a connection and add it to a project using IBM Data Refinery&#39;,
- &#39;MongoDB and Ransomware&#39;,
- &#39;Create a project for Watson Machine Learning in DSX&#39;,
- &#39;Deep Learning Achievements Over the Past Year &#39;,
- &#39;Why a managed database from Compose?&#39;,
- &#39;Automating web analytics through Python&#39;,
- &#39;Discover, catalog and govern data with IBM Data Catalog&#39;,
- &#39;Create a replication job&#39;,
- &#39;21 Must-Know Data Science Interview Questions and Answers&#39;,
- &#39;Build Deep Learning Architectures With Neural Network Modeler&#39;,
- &#39;Find the User in Data Science &#39;,
- &#39;DataLayer Conference: Partial Indexing for Improved Query Performance&#39;,
- &#39;Get social with your notebooks in DSX&#39;,
- &#39;Integrate dashDB and Informatica Cloud&#39;,
- &#39;Imitation Learning in Tensorflow (Hopper from openAI gym)&#39;,
- &#39;Shiny: a data scientist’s best friend&#39;,
- &#39;70 Amazing Free Data Sources You Should Know&#39;,
- &#39;Calculate moving averages on real time data with Streams Designer&#39;,
- &#39;Libraries and Tutorials&#39;,
- &#39;SQLPro for Postgres and Keylord for Redis&#39;,
- &#39;Predict Chronic Kidney Disease Using SPSS Modeler Flows&#39;,
- &#39;Simulating E.T. – Or: how to insert individual files into object storage from within a map function in Apache Spark&#39;,
- &#39;Webinar: April 11 - Thinking inside the box: you can do that inside a data frame?!&#39;,
- &#39;Cloudant Sync for iOS v1.0 is released&#39;,
- &#39;Package Development with devtools  Cheat Sheet&#39;,
- &#39;Spark SQL - Rapid Performance Evolution&#39;,
- &#39;This Week in Data Science&#39;,
- &#39;How the Circle Line rogue train was caught with data&#39;,
- &#39;Real-Time Sentiment Analysis of Twitter Hashtags with Spark (+ PixieDust)&#39;,
- &#39;Easy JSON Loading and Social Sharing in DSX Notebooks&#39;,
- &#39;Store Tweets Using Bluemix, Node-RED, Cloudant, and dashDB&#39;,
- &#39;flexdashboard: Interactive dashboards for R&#39;,
- &#39;Working with data flows using  Watson Data APIs&#39;,
- &#39;Score a Predictive Model Built with IBM SPSS Modeler, WML &amp; DSX&#39;,
- &#39;Easy Access to All Points of Interest Data – IBM Watson Data Lab – Medium&#39;,
- &#39;Offline Sync for Progressive Web Apps – IBM Watson Data Lab – Medium&#39;,
- &#39;Improved Performance for Redis Cache Mode on Compose&#39;,
- &#39;Simple Search Service&#39;,
- &#39;Connecting R and Compose PostgreSQL&#39;,
- &#39;15 Page Tutorial for R&#39;,
- &#39;Better together: SPSS and Data Science Experience&#39;,
- &#39;Predict temperatures using dashDB, Python, and R&#39;,
- &#39;Excel files: Loading from Object Storage — Python&#39;,
- &#39;Mongo Metrics: Finding a Happy Median&#39;,
- &#39;DataLayer Conference: Online Schema Migrations for MySQL Using gh-ost&#39;,
- &#39;Visualizing Stripe Data With Chartio&#39;,
- &#39;Metrics Maven: Calculating a Weighted Moving Average in PostgreSQL&#39;,
- &#39;Magical Markov Chains&#39;,
- &#39;Missing data conundrum: Exploration and Imputation Techniques&#39;,
- &#39;Access an On-Premises DB2 Data Server from the Bluemix Cloud&#39;,
- &#39;Building CouchApps&#39;,
- &#39;Use Aginity Workbench for IBM dashDB&#39;,
- &#39;Word2Vec in Data Products&#39;,
- &#39;This Week in Data Science (August 16, 2016)&#39;,
- &#39;Cloudant &lt;3 Apache CouchDB™ 2.0&#39;,
- &#39;Load and analyze public data sets in DSX&#39;,
- &#34;A Quick Guide to Redis 3.2&#39;s Geo Support&#34;,
- &#39;Using PostgreSQL through SQLAlchemy&#39;,
- &#39;Cross-Database Querying in Compose PostgreSQL&#39;,
- &#39;GeoFile: Using OpenStreetMap Data in Compose PostgreSQL - Part I&#39;,
- &#39;PostgreSQL connection limit control&#39;,
- &#39;A Survey of Books about Apache Spark™&#39;,
- &#34;For AI to Get Creative, It Must Learn the Rules--Then How to Break &#39;Em&#34;,
- &#39;Simple OAuth With MongoDB &amp; MySQL&#39;,
- &#39;Index Array Elements &amp; Query JSON&#39;,
- &#39;The Database Tool for Elixir and Phoenix&#39;,
- &#39;Data Migration &amp; Transformation Tools&#39;,
- &#39;Data Visualization Playbook: Telling the Data Story&#39;,
- &#39;The power of machine learning in Spark&#39;,
- &#39;Visual Information Theory &#39;,
- &#39;10 Essential Algorithms For Machine Learning Engineers&#39;,
- &#39;NIPS 2016 — Day 2 Highlights&#39;,
- &#39;This Week in Data Science (March 7, 2017)&#39;,
- &#39;May 2016: Scripts of the Week&#39;,
- &#39;From Python Nested Lists to Multidimensional numpy Arrays&#39;,
- &#39;The Most Popular Search Term at SXSW, According to Our Chatbot&#39;,
- &#39;PixieDust 1.0 is here! – IBM Watson Data Lab&#39;,
- &#39;Developing for the IBM Streaming Analytics service&#39;,
- &#39;You may get pwned! At least protect passwords with bcrypt.&#39;,
- &#39;Rapidly build Machine Learning flows with DSX&#39;,
- &#39;Mobile Apps Offline and Online&#39;,
- &#39;Asynchronous Joins Using RabbitMQ&#39;,
- &#39;Making Sense of the Bias / Variance Trade-off in (Deep) Reinforcement Learning&#39;,
- &#39;This Week in Data Science (September 20, 2016)&#39;,
- &#39;PouchDB: the Swiss Army Knife of databases – IBM Watson Data Lab – Medium&#39;,
- &#39;Simple Service Registry&#39;,
- &#39;Store Result Sets with Materialized Views in PostgreSQL&#39;,
- &#39;10 pieces of advice to beginner data scientists&#39;,
- &#39;Easy Frontends for Simple Search API Using GoT Data&#39;,
- &#39;Deploying a Full Stack Node.js Application to IBM Bluemix&#39;,
- &#39;Seven Databases in Seven Days – a Cloud Data Services journey&#39;,
- &#39;Spark-based machine learning tools for capturing word meanings&#39;,
- &#39;Talking ScyllaDB with CTO Avi Kivity&#39;,
- &#39;httr 1.2.0&#39;,
- &#39;Storing Network Addresses using PostgreSQL&#39;,
- &#39;GeoFile: Spatial Reference Systems and Databases&#39;,
- &#39;Hurricane How-To&#39;,
- &#39;Introducing Cloudant Geospatial&#39;,
- &#39;Build a Predictive Analytic Model&#39;,
- &#39;“Schemas” in CouchDB&#39;,
- &#39;Sharing non-public data in Jupyter notebooks – IBM Watson Data Lab – Medium&#39;,
- &#39;Move a toy car with your mind&#39;,
- &#39;Getting started with Elasticsearch and Node.js - part 2&#39;,
- &#39;Mobile Web Apps with PouchDB, AngularJS, Node.js and IBM Cloudant&#39;,
- &#39;Working with on-premises databases — Step by Step&#39;,
- &#39;A glimpse inside the mind of a data scientist&#39;,
- &#39;Are Your Predictive Models like Broken Clocks?&#39;,
- &#39;SETI data, publicly available, from IBM&#39;,
- &#39;Variational auto-encoder for &#34;Frey faces&#34; using keras&#39;,
- &#39;From Machine Learning to Learning Machine (Dinesh Nirmal)&#39;,
- &#39;Load data into RStudio for analysis in DSX&#39;,
- &#39;Tidy Data In Python&#39;,
- &#39;Announcing the Data Browser for JanusGraph&#39;,
- &#39;Making data science a team sport&#39;,
- &#39;Building Secure Distributed Javascript Microservices with RabbitMQ and SenecaJS&#39;,
- &#39;Python If Statements Explained (Python For Data Science Basics #4)&#39;,
- &#39;Powering social feeds and timelines with Elasticsearch&#39;,
- &#39;Easier Java connections to MongoDB at Compose&#39;,
- &#39;Export Cloudant JSON as CSV, RSS, or iCal&#39;,
- &#39;BigInsights Sample Scripts&#39;,
- &#39;Caching Cloudant Requests with cachemachine&#39;,
- &#39;Authenticating Node-RED using JSONWebToken, part 2&#39;,
- &#39;PostGraphQL: PostgreSQL meets GraphQL&#39;,
- &#39;Your own weather forecast in a Python notebook&#39;,
- &#39;Making of a Smart Business Chatbot: Part 2&#39;,
- &#39;Governance overview for IBM Data Catalog&#39;,
- &#39;Connecting applications to Compose for MySQL&#39;,
- &#39;Database Management Tools and Compose for MySQL&#39;,
- &#39;Empirical Bayes for multiple sample sizes&#39;,
- &#39;Effectively Using\xa0Matplotlib&#39;,
- &#39;Handling Failure Successfully in RabbitMQ – IBM Watson Data Lab&#39;,
- &#39;10 Data Science, Machine Learning and AI Podcasts You Must Listen To&#39;,
- &#39;Interactive time series with dygraphs&#39;,
- &#39;Getting Connected with RabbitMQ and Elasticsearch&#39;,
- &#39;Cloud Data Services&#39;,
- &#39;Quick Guide to Build a Recommendation Engine in Python&#39;,
- &#34;Java and Let&#39;s Encrypt certificates&#34;,
- &#39;Compose RabbitMQ now out of beta&#39;,
- &#39;Command-line tools for Cloudant and CouchDB&#39;,
- &#34;Building Instant RESTFul API&#39;s with MongoDB and RESTHeart&#34;,
- &#39;10 Powerful Features on Watson Data Platform, No Coding Necessary&#39;,
- &#39;On calculating AUC&#39;,
- &#39;A Dramatic Tour through Python’s Data Visualization Landscape (including ggplot and Altair)&#39;,
- &#39;Moving data from DynamoDB to Cloudant or CouchDB – IBM Watson Data Lab&#39;,
- &#39;Reintroducing the Simple Search Service&#39;,
- &#39;Blogging without the hosting – IBM Watson Data Lab&#39;,
- &#39;Eye Candy for Cloudant – IBM Watson Data Lab – Medium&#39;,
- &#39;Machine Learning for the Enterprise&#39;,
- &#39;Sentiment Analysis of Twitter Hashtags&#39;,
- &#39;Connecting to Compose for MySQL&#39;,
- &#39;Simple Website Metrics&#39;,
- &#39;Making the most of Compose: Customer case study with Human Design&#39;,
- &#39;Machine Learning for everyone&#39;,
- &#39;Collaborate on projects in DSX&#39;,
- &#39;This Week in Data Science (August 23, 2016)&#39;,
- &#39;Interview: Christopher Quinones on the newest graph database, JanusGraph&#39;,
- &#39;Use the Machine Learning Library&#39;,
- &#39;Environment variables, or keeping your secrets secret in a Node.js app – IBM Watson Data Lab&#39;,
- &#39;Getting the distance using Redis and PostgreSQL&#39;,
- &#39;Machine Learning Exercises In Python, Part 1&#39;,
- &#39;Generative Adversarial Networks (GANs)&#39;,
- &#39;Add custom Alexa skills with OpenWhisk and Cloudant – IBM Watson Data Lab&#39;,
- &#39;What I learned at PyCon and Spark Summit&#39;,
- &#39;Offline First FOMO&#39;,
- &#39;Girl Develop It Leadership Summit Recap&#39;,
- &#39;Building JavaScript Microservices with SenecaJS and Compose&#39;,
- &#39;Avoid Storing Data Inside &#34;Admin&#34; When Using MongoDB&#39;,
- &#39;Keeping data warehouse infrastructure out of your way&#39;,
- &#39;Using RStudio in IBM Data Science Experience&#39;,
- &#39;Plug-In to the Cloudant Node.js Library v1.5&#39;,
- &#39;Node-RED&#39;,
- &#39;Code Walkthrough of IBM MobileFirst Platform on Bluemix Hosted Acme Apparel Application&#39;,
- &#39;What is SMOTE in an imbalanced class setting (e.g. fraud detection)?&#39;,
- &#34;Building Secure Instant API&#39;s with RESTHeart and Compose&#34;,
- &#39;Add data assets to a catalog using IBM Data Catalog&#39;,
- &#39;This Week in Data Science (August 09, 2016)&#39;,
- &#39;Analyzing Salesforce Data with Looker: A Salesforce BI solution with dashDB, Cloudant, and Looker&#39;,
- &#39;Getting Started with Elasticsearch using Compose&#39;,
- &#39;Turn Small Data Into Smart Data. Part 1&#39;,
- &#39;Voice of InterConnect – IBM Watson Data Lab&#39;,
- &#39;Machine Learning and the Science of Choosing&#39;,
- &#39;App Store gives hope to Indie Developers Again?&#39;,
- &#39;Build SQL Queries in a Scala notebook using Apache Spark&#39;,
- &#39;This Week in Data Science (October 05, 2016)&#39;,
- &#39;The Center of Your Data Universe&#39;,
- &#39;Seven Databases in Seven Days – Day 5: etcd&#39;,
- &#39;Leverage dashDB in Cognos Business Intelligence&#39;,
- &#39;Authorized curl, a.k.a acurl&#39;,
- &#39;Access Documentation and Support Resources&#39;,
- &#39;Querying Your PouchDB Database with SQL – IBM Watson Data Lab – Medium&#39;,
- &#39;Aspiring Data Scientists! Start to learn Statistics with these 6 books!&#39;,
- &#39;Use the Cloudant-Spark connector in Python notebook&#39;,
- &#39;Optimizing MongoDB Queries with Elasticsearch&#39;,
- &#39;Pearson correlation aggregation on SparkSQL&#39;,
- &#39;Navigating NoSQL&#39;,
- &#39;Schema migrations with Alembic, Python and PostgreSQL&#39;,
- &#39;Humans vs. Apache Spark: Building our Rock-Paper-Scissors game&#39;,
- &#39;Example Chrome Extensions Using PouchDB&#39;,
- &#39;Create a serverless, Watson-powered chatbot for your business&#39;,
- &#39;Scaling an Existing PHP App with RabbitMQ&#39;,
- &#39;Best Practices for Custom Models in Watson Visual Recognition&#39;,
- &#39;Making Data Pretty in PostgreSQL&#39;,
- &#39;Enjoy Python 3.5 in Jupyter Notebooks&#39;,
- &#39;Running PouchDB in a Web Worker&#39;,
- &#39;R Markdown Reference Guide&#39;,
- &#39;Analyze Starcraft II replays with Jupyter Notebooks&#39;,
- &#39;Build Scalable Webhooks with a Queue and Workers Setup – IBM Watson Data Lab&#39;,
- &#39;MapReduce explained&#39;,
- &#39;Cleaning the swamp: Turn your data lake into a source of crystal-clear insight&#39;,
- &#39;Time Series Analysis Using Max/Min and Neuroscience&#39;,
- &#39;Introduction to Compose for MongoDB&#39;,
- &#39;This Week in Data Science (February 21, 2017)&#39;,
- &#39;Analyze traffic data from the city of San Francisco&#39;,
- &#39;Turn Small Data Into Smart Data. Part 2&#39;,
- &#39;Webizing your database with Linked Data in JSON-LD on Cloudant&#39;,
- &#39;How to write the first for loop in R&#39;,
- &#39;An IBM Graph client library for Node.js&#39;,
- &#39;Stacking Multiple Custom Models in Watson Visual Recognition&#39;,
- &#39;Overfitting in Machine Learning: What It Is and How to Prevent It&#39;,
- &#39;Sample Python Notebook: Precipitation Analysis&#39;,
- &#39;Load data from the desktop into dashDB&#39;,
- &#39;Faster Performance with Unlogged Tables in PostgreSQL&#39;,
- &#39;NIPS 2016 — Day 1 Highlights&#39;,
- &#39;Statistical Bias Types explained&#39;,
- &#39;Building an Ordering Application with Watson AI and PostgreSQL: Part 1&#39;,
- &#39;10 Data Science Podcasts You Need To be Listening To Right Now&#39;,
- &#39;Do you know why Compose proxies database connections?&#39;,
- &#39;Probabilistic Graphical Models Tutorial\u200a—\u200aPart 1 – Stats and Bots&#39;,
- &#39;Web Picks (week of 2 October 2017)&#39;,
- &#39;Blogging With Brunel&#39;,
- &#39;Building an Ordering Application with Watson AI and PostgreSQL: Part II&#39;,
- &#39;Don’t overlook simpler techniques and algorithms&#39;,
- &#39;Use NiFi to Lessen the Friction of Moving Data&#39;,
- &#39;Perform market basket analysis using dashDB and R&#39;,
- &#39;Forgetting the Past to Learn the Future: Long Short-Term Memory Neural Networks for Time Series Prediction&#39;,
- &#39;Use All the Databases – Part 2&#39;,
- &#39;Mobile App Webinar Demo&#39;,
- &#39;Connecting PHP to Compose for MySQL on Bluemix&#39;,
- &#39;Interactive Web Apps with shiny Cheat Sheet&#39;,
- &#39;Breaking the 80/20 rule: How data catalogs transform data scientists’ productivity&#39;,
- &#39;Use the Machine Learning Library in IBM Analytics for Apache Spark&#39;,
- &#39;GeoJSON Database with Cloudant + Mapbox&#39;,
- &#39;Seven Databases in Seven Days – Day 6: IBM Graph&#39;,
- &#39;A guide to convolution arithmetic for deep learning&#39;,
- &#39;Simple Metrics Tutorial Part 2&#39;,
- &#39;Neural Language Modeling From Scratch (Part 1)&#39;,
- &#39;tidyr 0.4.0&#39;,
- &#39;Introducing the Simple Notification Service&#39;,
- &#39;PouchDB, the In-Browser Database That Replicates&#39;,
- &#39;Open Crime Data, Free for All&#39;,
- &#39;An Attempt to Understand Boosting Algorithm(s)&#39;,
- &#39;Query The Search Index&#39;,
- &#39;The Random Forest Algorithm &#39;,
- &#39;Jupyter (IPython) notebooks features&#39;,
- &#39;Build Spark SQL Queries&#39;,
- &#39;Making of a Smart Business Chatbot: Part 1&#39;,
- &#39;Cloudant Search Geo Example&#39;,
- &#39;Working With IBM Cloud Object Storage In Python&#39;,
- &#39;Using Machine Learning to Predict Baseball Injuries&#39;,
- &#39;Search Lobbyist Disclosures&#39;,
- &#39;Building a dynamic configuration service with etcd and Python&#39;,
- &#39;Diff your databases with couchdiff – IBM Watson Data Lab – Medium&#39;,
- &#39;Land Stripe data in IBM dashDB cloud data warehouse&#39;,
- &#39;Use the new Cloudant query&#39;,
- &#39;IBM Cloudant overview, NoSQL database-as-a-service&#39;,
- &#39;Tell Me Something I Don’t Know – IBM Watson Data Lab – Medium&#39;,
- &#39;Watson Speech-to-Text Services — tl;dr need not apply&#39;,
- &#39;Everything in the Radius with PostGIS&#39;,
- &#39;Visualizing Compose PostgreSQL Data with Leftronic&#39;,
- &#39;Customer: Interloop - Making the Most of Compose&#39;,
- &#39;Compose for MySQL and Compose for ScyllaDB: the new Compose databases on Bluemix&#39;,
- &#39;DataLayer Exposed: Antonio Chavez &amp; Why We Left MongoDB&#39;,
- &#39;Build SQL queries with Apache Spark in DSX&#39;,
- &#39;Talent vs Luck: the role of randomness in success and failure&#39;,
- &#39;Reading &amp; Writing&#39;,
- &#39;Time Series Anomaly Detection Algorithms – Stats and Bots&#39;,
- &#39;tidyr 0.5.0&#39;,
- &#39;How to use version control (GitHub) in RStudio within DSX?&#39;,
- &#39;Short-Notice Serverless Conference&#39;,
- &#39;Pseudo-labeling a simple semi-supervised learning method&#39;,
- &#39;Workflow in R&#39;,
- &#39;Load Cloudant Data in Apache Spark Using a Python Notebook&#39;,
- &#39;Making data cleaning simple with the Sparkling.data library&#39;,
- &#39;Unstructured and structured data versus repetitive and non-repetitive&#39;,
- &#39;Who limits the rate-limiter? – IBM Watson Data Lab – Medium&#39;,
- &#39;Formatted SQL in Python with Psycopg’s Mogrify&#39;,
- &#39;Deep Learning From Scratch I: Computational Graphs&#39;,
- &#39;A New Version of DT (0.2) on CRAN&#39;,
- &#39;A Fast On-Disk Format for Data Frames for R and Python, powered by Apache Arrow&#39;,
- &#39;Interview with Sean Li, New Apache Spark™ Committer&#39;,
- &#39;Discover hidden Facebook usage insights&#39;,
- &#39;Extract and export dashDB data to a CSV file&#39;,
- &#39;Customer: ReadMe Conquering the Data Layer&#39;,
- &#39;New at Compose: Horizontal Scaling for Redis and more scaling control&#39;,
- &#39;Big data is better data&#39;,
- &#39;What is SystemML? Why is it relevant to you?&#39;,
- &#39;Apache Spark SQL Analyzer Resolves Order-by Column&#39;,
- &#39;Why Developer Experience Matters at Cloud Expo 2015&#39;,
- &#39;Shiny 0.12: Interactive Plots with ggplot2&#39;,
- &#39;Why even a moth’s brain is smarter than an AI&#39;,
- &#39;Simple Data Pipe connectors&#39;,
- &#39;A Plethora of Open Data Repositories (i.e., thousands!)&#39;,
- &#39;Leaflet: Interactive web maps with R&#39;,
- &#39;BigInsights on Cloud for Data Scientists&#39;,
- &#39;Brunel interactive visualizations in Jupyter notebooks&#39;,
- &#39;Using DSX notebooks to analyze GitHub data&#39;,
- &#39;Understanding empirical Bayes estimation (using baseball statistics)&#39;,
- &#39;INTERVIEW: LEVERAGING TECHNOLOGY, AND D3.JS&#39;,
- &#39;Beyond Parallelize and Collect&#39;,
- &#39;Data visualization with R: Scrum metrics&#39;,
- &#39;How to get backups with the Compose API and Node.js&#39;,
- &#39;Our first Offline First camp &lt;3&#39;,
- &#39;Data Visualization Playbook: Revisiting the Basics&#39;,
- &#39;Faster Operations with the jsonb Data Type in PostgreSQL&#39;,
- &#39;ML Algorithm != Learning Machine&#39;,
- &#39;Shiny 0.13.0&#39;,
- &#39;FlightPredict II: The Sequel  – IBM Watson Data Lab&#39;,
- &#39;Launching RESTHeart into Production&#39;,
- &#39;Defensive coding in Map/Index functions&#39;,
- &#39;Create a project in DSX&#39;,
- &#39;Recent trends in recommender systems&#39;,
- &#39;This Week in Data Science (November 22, 2016)&#39;,
- &#39;The Data Science Process&#39;,
- &#39;Using couchimport to load JSON data into Cloudant&#39;,
- &#39;Apache Spark as the New Engine of Genomics&#39;,
- &#39;Session Recap: Save the World with Offline First – IBM Watson Data Lab&#39;,
- &#39;Making the Most of Compose: Customer C2G Consulting&#39;,
- &#39;logshare&#39;,
- &#39;Super Fast String Matching in Python&#39;,
- &#39;Identify Useful HTTP API Tools&#39;,
- &#39;Redis, Go, &amp; How to Build a Chat Application&#39;,
- &#39;The Data Processing Inequality&#39;,
- &#39;A Day in the Life of a Data Engineer&#39;,
- &#39;R for Data Science&#39;,
- &#39;Realtime Infrastucture Made Simple – IBM Watson Data Lab&#39;,
- &#39;Accessing DB2 on-prem databases from IBM Bluemix cloud&#39;,
- &#39;Mastering Redis high-availability and blocking connections&#39;,
- &#39;This Week in Data Science (January 10, 2017)&#39;,
- &#39;Bach Updated and Support Streamlined&#39;,
- &#39;Building a MobileFirst App on IBM Bluemix&#39;,
- &#39;Configuring the Apache Spark SQL Context&#39;,
- &#39;Using Query String Queries in Elasticsearch&#39;,
- &#39;Visualizing weather data as a PixieApp – IBM Watson Data Lab – Medium&#39;,
- &#39;5 Practical Use Cases of Social Network Analytics: Going Beyond Facebook and Twitter&#39;,
- &#39;Apache Spark: Upgrade and speed-up your analytics&#39;,
- &#39;GeoFile: PostGIS and Raster Data&#39;,
- &#39;From PureData System for Analytics to a dashDB Cloud Data Warehouse&#39;,
- ...]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[81]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_article_names</span><span class="p">(</span><span class="n">article_ids</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">):</span>
@@ -15386,27 +14347,24 @@ The 3 most similar users to user 46 are: [45, 4200, 3781]
 <span class="sd">    and ends exceeding m, the last items are chosen arbitrarily</span>
 <span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="c1"># Your code here</span>
-    <span class="n">similar_users</span> <span class="o">=</span> <span class="n">find_similar_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
-    <span class="n">user_article_ids</span> <span class="o">=</span> <span class="n">get_user_articles</span><span class="p">(</span><span class="n">user_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+     <span class="c1"># Your code here</span>
+    <span class="n">most_similar_users</span> <span class="o">=</span> <span class="n">find_similar_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">user_item</span><span class="p">)</span>
+
     <span class="n">recs</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">n_user</span><span class="o">=</span><span class="mi">1</span>
-    <span class="n">nrecs</span>  <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">cond</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">while</span> <span class="n">cond</span><span class="p">:</span>
-        <span class="n">current_ids</span><span class="o">=</span><span class="n">get_user_articles</span><span class="p">(</span><span class="n">similar_users</span><span class="p">[</span><span class="n">n_user</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">u1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">user_article_ids</span><span class="p">)</span>
-        <span class="n">u2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">current_ids</span><span class="p">)</span>
-        <span class="n">setdif</span><span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">u2</span> <span class="o">-</span> <span class="n">u1</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">setdif</span><span class="p">:</span>
-            <span class="n">recs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="n">nrecs</span> <span class="o">=</span> <span class="n">nrecs</span><span class="o">+</span><span class="mi">1</span>
-            <span class="k">if</span> <span class="n">nrecs</span> <span class="o">==</span> <span class="n">m</span><span class="p">:</span>
-                <span class="n">cond</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">break</span>
-        <span class="n">n_user</span> <span class="o">=</span> <span class="n">n_user</span><span class="o">+</span><span class="mi">1</span>
-        
-    <span class="k">return</span> <span class="n">recs</span> <span class="c1"># return your recommendations for this user_id    </span>
+
+    <span class="n">user_seen_articles</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_user_articles</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">user_item</span><span class="p">)</span>
+    <span class="n">user_seen_articles</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">user_seen_articles</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">most_similar_users</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">recs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">article_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">get_user_articles</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">user_item</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">recommended_ids</span> <span class="o">=</span> <span class="n">article_ids</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">user_seen_articles</span><span class="p">)</span>
+            <span class="n">req_recs</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">recs</span><span class="p">)</span>
+            <span class="n">recommended_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">recommended_ids</span><span class="p">)[:</span><span class="n">req_recs</span><span class="p">]</span>
+            <span class="n">recs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">recommended_ids</span><span class="p">)</span>
+            <span class="n">user_seen_articles</span> <span class="o">=</span> <span class="n">user_seen_articles</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">recommended_ids</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">recs</span>
 </pre></div>
 
     </div>
@@ -15416,7 +14374,7 @@ The 3 most similar users to user 46 are: [45, 4200, 3781]
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[82]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Test your functions here - No need to change this code - just run this cell</span>
@@ -15468,7 +14426,7 @@ The 3 most similar users to user 46 are: [45, 4200, 3781]
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[87]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_top_sorted_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">user_item</span><span class="o">=</span><span class="n">user_item</span><span class="p">):</span>
@@ -15500,10 +14458,10 @@ The 3 most similar users to user 46 are: [45, 4200, 3781]
         <span class="n">users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
         <span class="n">similarity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span><span class="n">user_items_replaced</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">user</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
         <span class="n">n_articles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">user_items_replaced</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">user</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
-    <span class="n">similarity_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="s1">&#39;similarity&#39;</span><span class="p">:</span><span class="n">similarity</span><span class="p">,</span><span class="s1">&#39;n_articles&#39;</span><span class="p">:</span><span class="n">n_articles</span><span class="p">})</span>
+    <span class="n">similarity_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;neighbor_id&#39;</span><span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="s1">&#39;similarity&#39;</span><span class="p">:</span><span class="n">similarity</span><span class="p">,</span><span class="s1">&#39;num_interactions&#39;</span><span class="p">:</span><span class="n">n_articles</span><span class="p">})</span>
 
-    <span class="k">return</span> <span class="n">similarity_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;similarity&#39;</span><span class="p">,</span><span class="s1">&#39;n_articles&#39;</span><span class="p">],</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">neighbors_df</span> <span class="c1"># Return the dataframe specified in the doc_string</span>
+    <span class="k">return</span> <span class="n">similarity_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;similarity&#39;</span><span class="p">,</span><span class="s1">&#39;num_interactions&#39;</span><span class="p">],</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="c1">#return neighbors_df # Return the dataframe specified in the doc_string</span>
 
 
 <span class="k">def</span> <span class="nf">user_user_recs_part2</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -15567,7 +14525,7 @@ The 3 most similar users to user 46 are: [45, 4200, 3781]
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[96]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Quick spot check - don&#39;t change this code - just use it to test your functions</span>
@@ -15594,10 +14552,10 @@ The 3 most similar users to user 46 are: [45, 4200, 3781]
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>The top 10 recommendations for user 20 are the following article ids:
-[&#39;1429.0&#39;, &#39;1185.0&#39;, &#39;1305.0&#39;, &#39;1336.0&#39;, &#39;1165.0&#39;, &#39;124.0&#39;, &#39;1163.0&#39;, &#39;1400.0&#39;, &#39;164.0&#39;, &#39;278.0&#39;]
+[&#39;43.0&#39;, &#39;1336.0&#39;, &#39;151.0&#39;, &#39;1332.0&#39;, &#39;29.0&#39;, &#39;111.0&#39;, &#39;692.0&#39;, &#39;464.0&#39;, &#39;609.0&#39;, &#39;876.0&#39;]
 
 The top 10 recommendations for user 20 are the following article names:
-[&#39;use deep learning for image classification&#39;, &#39;analyze precipitation data&#39;, &#39;gosales transactions for naive bayes model&#39;, &#39;learn tensorflow and deep learning together and now!&#39;, &#39;learn basics about notebooks and apache spark&#39;, &#39;classify tumors with machine learning&#39;, &#39;deep learning trends and an example&#39;, &#39;python machine learning: scikit-learn tutorial&#39;, &#39;analyze open data sets with spark &amp; pixiedust&#39;, &#39;uci ml repository: chronic kidney disease data set&#39;]
+[&#39;experience iot with coursera&#39;, &#39;15 page tutorial for r&#39;, &#39;simple linear regression? do it the bayesian way&#39;, &#39;learn basics about notebooks and apache spark&#39;, &#39;deep learning with tensorflow course by big data university&#39;, &#39;intents &amp; examples for ibm watson conversation&#39;, &#39;jupyter notebook tutorial&#39;, &#39;use ibm data science experience to detect time series anomalies&#39;, &#39;tidy up your jupyter notebooks with scripts&#39;, &#39;statistical bias types explained&#39;]
 </pre>
 </div>
 </div>
@@ -15616,12 +14574,12 @@ The top 10 recommendations for user 20 are the following article names:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[106]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Tests with a dictionary of results</span>
 
-<span class="n">user1_most_sim</span> <span class="o">=</span><span class="n">find_similar_users</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="c1"># Find the user that is most similar to user 1 </span>
+<span class="n">user1_most_sim</span> <span class="o">=</span><span class="n">find_similar_users</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="c1"># Find the user that is most similar to user 1 </span>
 <span class="n">user131_10th_sim</span> <span class="o">=</span> <span class="n">find_similar_users</span><span class="p">(</span><span class="mi">131</span><span class="p">)[</span><span class="mi">10</span><span class="p">]</span> <span class="c1"># Find the 10th most similar user to user 131</span>
 </pre></div>
 
@@ -15632,7 +14590,40 @@ The top 10 recommendations for user 20 are the following article names:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[107]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The user that is most similar to user 1 is &#39;</span><span class="p">,</span> <span class="n">user1_most_sim</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The user that is the 10th most similar to user 131&#39;</span><span class="p">,</span> <span class="n">user131_10th_sim</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The user that is most similar to user 1 is  3933
+The user that is the 10th most similar to user 131 242
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[97]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Dictionary Test Here</span>
@@ -15661,7 +14652,7 @@ The top 10 recommendations for user 20 are the following article names:
 <pre>
 <span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
 <span class="ansi-red-intense-fg ansi-bold">TypeError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-30-bd0702018110&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-97-48b2aabb3d5b&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
 <span class="ansi-green-fg">      5</span> }
 <span class="ansi-green-fg">      6</span> 
 <span class="ansi-green-intense-fg ansi-bold">----&gt; 7</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>t<span class="ansi-yellow-intense-fg ansi-bold">.</span>sol_5_test<span class="ansi-yellow-intense-fg ansi-bold">(</span>sol_5_dict<span class="ansi-yellow-intense-fg ansi-bold">)</span>
@@ -15692,7 +14683,8 @@ The top 10 recommendations for user 20 are the following article names:
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We would be able to use recommendations using only the top articles ( the most interacted articles). A better method would be to explore which article do new users tend to read first, and provide those in the recommendations. We could also rely on certain filters that users provide to us.</p>
+<p>We would be able to use recommendations using only the top articles ( the most interacted articles). A better method would be to explore which article do new users tend to read first, and provide those in the recommendations. We could also rely on certain filters that users provide to us. <br>
+Collaborative filtering cannot be used, as the new user has not interacted with any article, their user-matrix row would be all zeros. If we were to compute the similarity between the new user and all the other users, we would obtain a similiarity of 0 for any combination, thus all users would equally be significant to that user in this case.</p>
 
 </div>
 </div>
@@ -16374,20 +15366,20 @@ articles we cannot make a prediction on 0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="prompt input_prompt">In&nbsp;[115]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Use these cells to see how well you can use the training </span>
 <span class="c1"># decomposition to predict on test data</span>
 
 <span class="c1"># Create series of users and article in the right order</span>
-<span class="n">num_latent_feats</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="c1">#np.arange(10,100,20)</span>
+<span class="n">num_latent_feats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">720</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">user_ids_series</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">user_item_test</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 <span class="n">article_ids_series</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">user_item_test</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 <span class="n">sum_errs</span><span class="o">=</span><span class="p">[]</span>
 <span class="n">users_wissues</span><span class="o">=</span><span class="p">[]</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">num_latent_feats</span><span class="p">:</span>
-    <span class="n">estimated</span> <span class="o">=</span> <span class="n">user_item_test</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">estimated_test</span> <span class="o">=</span> <span class="n">user_item_test</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;running on latent_features = &#39;</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">user_ids_series</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -16403,7 +15395,7 @@ articles we cannot make a prediction on 0
                 <span class="k">continue</span>
             <span class="c1"># Take dot product of that row and column in U and V to make prediction</span>
             <span class="c1">#pred = np.dot(u_train[user_row, :], movie_matrix[:, movie_col])</span>
-            <span class="n">s_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">vt_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">s</span><span class="p">[:</span><span class="n">k</span><span class="p">]),</span> <span class="n">u</span><span class="p">[</span><span class="n">user_row</span><span class="p">,</span> <span class="p">:</span><span class="n">k</span><span class="p">],</span> <span class="n">vt</span><span class="p">[:</span><span class="n">k</span><span class="p">,</span> <span class="n">article_col</span><span class="p">]</span>
+            <span class="n">s_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">vt_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">s_train</span><span class="p">[:</span><span class="n">k</span><span class="p">]),</span> <span class="n">u_train</span><span class="p">[</span><span class="n">user_row</span><span class="p">,</span> <span class="p">:</span><span class="n">k</span><span class="p">],</span> <span class="n">vt_train</span><span class="p">[:</span><span class="n">k</span><span class="p">,</span> <span class="n">article_col</span><span class="p">]</span>
     
             <span class="c1"># take dot product</span>
             <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u_new</span><span class="p">,</span> <span class="n">s_new</span><span class="p">),</span> <span class="n">vt_new</span><span class="p">))</span>
@@ -16411,13 +15403,12 @@ articles we cannot make a prediction on 0
             <span class="c1"># compute error for each prediction to actual value</span>
     <span class="n">diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">user_item_test</span><span class="p">)</span>
     
-            <span class="c1"># total errors and keep track of them</span>
+
+    <span class="c1"># total errors and keep track of them</span>
     <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diffs</span><span class="p">)))</span>
     <span class="n">sum_errs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>  
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">num_latent_feats</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sum_errs</span><span class="p">)</span><span class="o">/</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Latent Features&#39;</span><span class="p">);</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">);</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Accuracy vs. Number of Latent Features&#39;</span><span class="p">);</span>
+    
+<span class="c1">#estimate on train df</span>
 </pre></div>
 
     </div>
@@ -16435,6 +15426,20 @@ articles we cannot make a prediction on 0
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>running on latent_features =  10
+running on latent_features =  60
+running on latent_features =  110
+running on latent_features =  160
+running on latent_features =  210
+running on latent_features =  260
+running on latent_features =  310
+running on latent_features =  360
+running on latent_features =  410
+running on latent_features =  460
+running on latent_features =  510
+running on latent_features =  560
+running on latent_features =  610
+running on latent_features =  660
+running on latent_features =  710
 </pre>
 </div>
 </div>
@@ -16444,14 +15449,19 @@ articles we cannot make a prediction on 0
     <div class="prompt"></div>
 
 
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">ValueError</span>                                Traceback (most recent call last)
+<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-115-aa92ef9941a2&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">     50</span> 
+<span class="ansi-green-fg">     51</span>     <span class="ansi-red-intense-fg ansi-bold"># compute error for each prediction to actual value</span>
+<span class="ansi-green-intense-fg ansi-bold">---&gt; 52</span><span class="ansi-yellow-intense-fg ansi-bold">     </span>diffs <span class="ansi-yellow-intense-fg ansi-bold">=</span> np<span class="ansi-yellow-intense-fg ansi-bold">.</span>subtract<span class="ansi-yellow-intense-fg ansi-bold">(</span>user_item_matrix<span class="ansi-yellow-intense-fg ansi-bold">,</span> user_item_est<span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">     53</span> 
+<span class="ansi-green-fg">     54</span>     <span class="ansi-red-intense-fg ansi-bold"># total errors and keep track of them</span>
 
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
+<span class="ansi-red-intense-fg ansi-bold">ValueError</span>: operands could not be broadcast together with shapes (5149,714) (4487,714) </pre>
 </div>
-
 </div>
 
 </div>
@@ -16460,10 +15470,44 @@ articles we cannot make a prediction on 0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[55]:</div>
+<div class="prompt input_prompt">In&nbsp;[118]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sum_errs_train</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">err_train</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">num_latent_feats</span><span class="p">:</span>
+    <span class="c1"># restructure with k latent features</span>
+    <span class="n">s_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">vt_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">s_train</span><span class="p">[:</span><span class="n">k</span><span class="p">]),</span> <span class="n">u_train</span><span class="p">[:,</span> <span class="p">:</span><span class="n">k</span><span class="p">],</span> <span class="n">vt_train</span><span class="p">[:</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span>
+    
+    <span class="c1"># take dot product</span>
+    <span class="n">user_item_est</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u_new</span><span class="p">,</span> <span class="n">s_new</span><span class="p">),</span> <span class="n">vt_new</span><span class="p">))</span>
+    
+    <span class="c1"># compute error for each prediction to actual value</span>
+    <span class="n">diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">user_item_train</span><span class="p">,</span> <span class="n">user_item_est</span><span class="p">)</span>
+    
+    <span class="c1"># total errors and keep track of them</span>
+    <span class="n">err_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diffs</span><span class="p">)))</span>
+    <span class="n">sum_errs_train</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err_train</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[120]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">num_latent_feats</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sum_errs</span><span class="p">)</span><span class="o">/</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">num_latent_feats</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sum_errs_train</span><span class="p">)</span><span class="o">/</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Latent Features&#39;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Accuracy vs. Number of Latent Features&#39;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Testing set&#39;</span><span class="p">,</span> <span class="s1">&#39;Trainining set&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -16476,30 +15520,32 @@ articles we cannot make a prediction on 0
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[55]:</div>
+    <div class="prompt output_prompt">Out[120]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>573</pre>
+<pre>&lt;matplotlib.legend.Legend at 0x16b04683188&gt;</pre>
 </div>
 
 </div>
 
-</div>
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
 
-    </div>
 </div>
 </div>
 
@@ -16515,7 +15561,9 @@ articles we cannot make a prediction on 0
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Your response here.</strong></p>
+<p>We should not use mroe latent features than 100, as the number of latent features increases, it not only plateus the accuracy, it also decreases a bit as we increase the number of latent features.  <br>
+We should recommend the top articles to new users, or allow them to use filters to control recommendations based on keywords (searching the df_content for certain keywords and provide them in our results). <br>
+In order to track whether our recommendations work, we can track whether the user interacts with a recommend</p>
 
 </div>
 </div>
@@ -16538,11 +15586,44 @@ articles we cannot make a prediction on 0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[76]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">call</span>
 <span class="n">call</span><span class="p">([</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;nbconvert&#39;</span><span class="p">,</span> <span class="s1">&#39;Recommendations_with_IBM.ipynb&#39;</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[76]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
